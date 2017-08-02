@@ -1,3 +1,4 @@
+# handles users for admin dashboard
 class Admin::UsersController < ApplicationController
   def index
     @users = User.all

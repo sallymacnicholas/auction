@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   get '/browse', to: 'home#index', as: :browse
   get 'search', to: 'admin/users#index'
-  resources :home, only: [:index, :show]
+  resources :home, only: %i[index show]
 
   namespace :admin do
     resources :dashboard

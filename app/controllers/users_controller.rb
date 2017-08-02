@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-  def index
-  end
+  def index; end
 
   def new
     @user = User.new
@@ -14,7 +13,7 @@ class UsersController < ApplicationController
       redirect_to user_path(@user)
       flash[:notice] = "Logged in as #{@user.first_name} #{@user.last_name}"
     else
-      flash[:error] = @user.errors.full_messages.join(", ")
+      flash[:error] = @user.errors.full_messages.join(', ')
       render :new
     end
   end
@@ -22,7 +21,7 @@ class UsersController < ApplicationController
   def show
     @upvoted = current_user.get_voted Item
     session[:last_dashboard_page] = request.env['HTTP_REFERER'] ||
-      user_path(current_user)
+                                    user_path(current_user)
   end
 
   private
