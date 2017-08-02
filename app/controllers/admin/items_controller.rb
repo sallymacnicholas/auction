@@ -1,5 +1,8 @@
+# handles item actions in admin dashboard
 class Admin::ItemsController < ApplicationController
   before_action :authorize_admin
+  before_action :set_item, only: %i[edit update]
+
   def new
     @item = Item.new
   end
@@ -12,18 +15,14 @@ class Admin::ItemsController < ApplicationController
       redirect_to admin_dashboard_index_path
     else
       render :new
-      flash.now[:notice] = @item.errors.full_messages.join(", ")
+      flash.now[:notice] = @item.errors.full_messages.join(', ')
     end
   end
 
-  def edit
-    @item = Item.find(params[:id])
-  end
+  def edit; end
 
   def update
-    @item = Item.find(params[:id])
-
-    return archive_item(@item, params[:archive]) if params.include?("archive")
+    return archive_item(@item, params[:archive]) if params.include?('archive')
     @item.update(item_params)
     if @item.save
       flash.now[:notice] = 'You successfully updated #{@item.name}.'
@@ -34,6 +33,7 @@ class Admin::ItemsController < ApplicationController
   end
 
   private
+
   def item_params
     params.require(:item).permit(:name,
                                  :user_id,
@@ -49,6 +49,10 @@ class Admin::ItemsController < ApplicationController
                                  :zip,
                                  :email,
                                  :phone)
+  end
+
+  def set_item
+    @item = Item.find(params[:id])
   end
 
   def archive_item(item, archive)

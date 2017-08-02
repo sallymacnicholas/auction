@@ -15,6 +15,18 @@ ActiveRecord::Schema.define(version: 20170124193044) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "car_washes", force: :cascade do |t|
+    t.integer "store_id"
+    t.boolean "hot_wax"
+    t.boolean "full_detail"
+    t.index ["store_id"], name: "car_washes_store_id_key", unique: true, using: :btree
+  end
+
+  create_table "cities", force: :cascade do |t|
+    t.string  "name",          limit: 255
+    t.boolean "allows_drones"
+  end
+
   create_table "favorites", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "item_id"
@@ -48,6 +60,34 @@ ActiveRecord::Schema.define(version: 20170124193044) do
     t.index ["user_id"], name: "index_items_on_user_id", using: :btree
   end
 
+  create_table "salsas", force: :cascade do |t|
+    t.string "name", limit: 255
+  end
+
+  create_table "stores", force: :cascade do |t|
+    t.string  "name",         limit: 255
+    t.integer "city_id"
+    t.boolean "sells_beer"
+    t.integer "zagat_rating"
+  end
+
+  create_table "stores_salsas", force: :cascade do |t|
+    t.integer "store_id"
+    t.integer "salsa_id"
+    t.integer "spiciness"
+  end
+
+  create_table "stores_tacos", force: :cascade do |t|
+    t.integer "store_id"
+    t.integer "taco_id"
+    t.decimal "price",    precision: 6, scale: 2
+  end
+
+  create_table "tacos", force: :cascade do |t|
+    t.string  "name",       limit: 255
+    t.boolean "vegetarian"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "first_name"
     t.string   "last_name"
@@ -72,7 +112,13 @@ ActiveRecord::Schema.define(version: 20170124193044) do
     t.index ["voter_id", "voter_type", "vote_scope"], name: "index_votes_on_voter_id_and_voter_type_and_vote_scope", using: :btree
   end
 
+  add_foreign_key "car_washes", "stores", name: "car_washes_store_id_fkey"
   add_foreign_key "favorites", "items"
   add_foreign_key "favorites", "users"
   add_foreign_key "items", "users"
+  add_foreign_key "stores", "cities", name: "stores_city_id_fkey"
+  add_foreign_key "stores_salsas", "salsas", name: "stores_salsas_salsa_id_fkey"
+  add_foreign_key "stores_salsas", "stores", name: "stores_salsas_store_id_fkey"
+  add_foreign_key "stores_tacos", "stores", name: "stores_tacos_store_id_fkey"
+  add_foreign_key "stores_tacos", "tacos", name: "stores_tacos_taco_id_fkey"
 end
